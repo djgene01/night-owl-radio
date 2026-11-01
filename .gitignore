@@ -1,0 +1,17 @@
+# WiFi credentials: copy firmware/RadioOLED/secrets.example.h to secrets.h
+secrets.h
+
+# Arduino / PlatformIO build output
+build/
+.pio/
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# slicer projects and OS clutter
+*.3mf
+Thumbs.db
+.DS_Store

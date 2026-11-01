@@ -1,0 +1,168 @@
+<Window x:Class="NightOwlLink.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Night Owl Link" Width="440" Height="820" MinWidth="380" MinHeight="600"
+        WindowStartupLocation="CenterScreen" Background="#080B10"
+        TextOptions.TextFormattingMode="Display" UseLayoutRounding="True">
+  <Grid>
+    <!-- soft glows behind the card, like the radio's web page -->
+    <Canvas IsHitTestVisible="False" ClipToBounds="True">
+      <Ellipse Width="420" Height="360" Canvas.Left="-140" Canvas.Top="-150" Opacity=".55">
+        <Ellipse.Fill>
+          <RadialGradientBrush><GradientStop Color="#334ADE80" Offset="0"/><GradientStop Color="#004ADE80" Offset="1"/></RadialGradientBrush>
+        </Ellipse.Fill>
+      </Ellipse>
+      <Ellipse Width="420" Height="380" Canvas.Left="200" Canvas.Top="420" Opacity=".55">
+        <Ellipse.Fill>
+          <RadialGradientBrush><GradientStop Color="#2A22D3EE" Offset="0"/><GradientStop Color="#0022D3EE" Offset="1"/></RadialGradientBrush>
+        </Ellipse.Fill>
+      </Ellipse>
+    </Canvas>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="20,18,20,20">
+
+        <!-- header -->
+        <Grid Margin="2,0,2,16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Border Width="38" Height="38" CornerRadius="12" Background="{StaticResource Accent}">
+            <Canvas Width="22" Height="18">
+              <!-- a tiny owl: two eyes and a beak -->
+              <Ellipse Width="9" Height="9" Canvas.Left="1" Canvas.Top="2" Fill="#0B1015"/>
+              <Ellipse Width="9" Height="9" Canvas.Left="12" Canvas.Top="2" Fill="#0B1015"/>
+              <Ellipse Width="3.5" Height="3.5" Canvas.Left="4" Canvas.Top="4.5" Fill="White"/>
+              <Ellipse Width="3.5" Height="3.5" Canvas.Left="15" Canvas.Top="4.5" Fill="White"/>
+              <Path Data="M9,12 L13,12 L11,16 Z" Fill="#0B1015"/>
+            </Canvas>
+          </Border>
+          <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+            <TextBlock Text="Night Owl Link" FontSize="19" FontWeight="Bold"/>
+            <TextBlock Text="Your laptop's sound, on the radio" FontSize="12" Foreground="{StaticResource Muted}"/>
+          </StackPanel>
+          <Border Grid.Column="2" CornerRadius="99" Background="#14FFFFFF" Padding="10,5" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse x:Name="StateDot" Width="8" Height="8" Fill="{StaticResource Faint}" VerticalAlignment="Center"/>
+              <TextBlock x:Name="StateText" Text="offline" Margin="7,0,0,0" FontSize="12" Foreground="{StaticResource Muted}"/>
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <!-- radio -->
+        <Border CornerRadius="20" Background="{StaticResource Card}" BorderBrush="{StaticResource CardEdge}" BorderThickness="1" Padding="16">
+          <StackPanel>
+            <TextBlock Text="RADIO" Style="{StaticResource Label}"/>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <TextBox x:Name="HostBox" Text="nightowl-radio.local" ToolTip="Radio name or IP address"/>
+              <Button x:Name="ConnectBtn" Grid.Column="1" Content="Connect" Margin="8,0,0,0" Click="Connect_Click"/>
+            </Grid>
+
+            <Border Margin="0,12,0,0" CornerRadius="14" Background="{StaticResource Panel}" Padding="13,11">
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock x:Name="RadioStation" Text="Not connected" FontSize="14.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                  <TextBlock x:Name="RadioTitle" Text="Find the radio to begin" Margin="0,3,0,0" FontSize="12.5"
+                             Foreground="{StaticResource Muted}" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+                <TextBlock x:Name="RadioClock" Grid.Column="1" Text="--:--" FontSize="20" FontWeight="Light"
+                           VerticalAlignment="Center" Margin="10,0,0,0" FontFamily="Segoe UI Variable Display, Segoe UI"/>
+              </Grid>
+            </Border>
+
+            <TextBlock Text="VOLUME" Style="{StaticResource Label}" Margin="0,14,0,4"/>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="40"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <Slider x:Name="VolSlider" Minimum="0" Maximum="21" IsSnapToTickEnabled="True" TickFrequency="1"
+                      VerticalAlignment="Center" ValueChanged="Vol_Changed" IsEnabled="False"/>
+              <TextBlock x:Name="VolText" Grid.Column="1" Text="--" TextAlignment="Right" VerticalAlignment="Center"
+                         FontWeight="SemiBold" Foreground="{StaticResource Muted}"/>
+              <Button x:Name="MuteBtn" Grid.Column="2" Content="Mute" Margin="10,0,0,0" Padding="12,6"
+                      FontSize="12" Click="Mute_Click" IsEnabled="False"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- the big button -->
+        <Button x:Name="StreamBtn" Margin="0,14,0,0" Padding="0,16" FontSize="16" IsEnabled="False"
+                Click="Stream_Click" BorderBrush="Transparent">
+          <Button.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+              <GradientStop Color="#2E4ADE80" Offset="0"/><GradientStop Color="#2E22D3EE" Offset="1"/>
+            </LinearGradientBrush>
+          </Button.Background>
+          <StackPanel Orientation="Horizontal">
+            <Path x:Name="StreamIcon" Width="16" Height="16" Stretch="Uniform" Fill="{StaticResource Green}"
+                  Data="M0,0 L12,7 L0,14 Z" VerticalAlignment="Center"/>
+            <TextBlock x:Name="StreamText" Text="Play laptop on the radio" Margin="10,0,0,0" FontWeight="Bold"/>
+          </StackPanel>
+        </Button>
+
+        <!-- audio -->
+        <Border Margin="0,14,0,0" CornerRadius="20" Background="{StaticResource Card}" BorderBrush="{StaticResource CardEdge}" BorderThickness="1" Padding="16">
+          <StackPanel>
+            <TextBlock Text="SOUND FROM" Style="{StaticResource Label}"/>
+            <ComboBox x:Name="DeviceBox" DisplayMemberPath="Name" SelectionChanged="Device_Changed"/>
+
+            <Grid Margin="0,14,0,0">
+              <Grid.RowDefinitions><RowDefinition/><RowDefinition Height="8"/><RowDefinition/></Grid.RowDefinitions>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <TextBlock Text="L" FontSize="10" Foreground="{StaticResource Faint}" VerticalAlignment="Center"/>
+              <Border Grid.Column="1" Height="6" CornerRadius="3" Background="#14FFFFFF" x:Name="MeterTrackL">
+                <Border x:Name="MeterL" HorizontalAlignment="Left" Width="0" CornerRadius="3">
+                  <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" MappingMode="Absolute">
+                      <GradientStop Color="#4ADE80" Offset="0"/><GradientStop Color="#FBBF24" Offset="250"/><GradientStop Color="#F87171" Offset="330"/>
+                    </LinearGradientBrush>
+                  </Border.Background>
+                </Border>
+              </Border>
+              <TextBlock Grid.Row="2" Text="R" FontSize="10" Foreground="{StaticResource Faint}" VerticalAlignment="Center"/>
+              <Border Grid.Row="2" Grid.Column="1" Height="6" CornerRadius="3" Background="#14FFFFFF">
+                <Border x:Name="MeterR" HorizontalAlignment="Left" Width="0" CornerRadius="3">
+                  <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" MappingMode="Absolute">
+                      <GradientStop Color="#4ADE80" Offset="0"/><GradientStop Color="#FBBF24" Offset="250"/><GradientStop Color="#F87171" Offset="330"/>
+                    </LinearGradientBrush>
+                  </Border.Background>
+                </Border>
+              </Border>
+            </Grid>
+
+            <Grid Margin="0,14,0,0">
+              <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="DELAY" Style="{StaticResource Label}" Margin="0,0,0,2"/>
+                <TextBlock x:Name="DelayText" Text="--" FontSize="15" FontWeight="SemiBold"/>
+              </StackPanel>
+              <StackPanel Grid.Column="1">
+                <TextBlock Text="QUALITY" Style="{StaticResource Label}" Margin="0,0,0,2"/>
+                <TextBlock Text="44.1 kHz" FontSize="15" FontWeight="SemiBold"/>
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="SENT" Style="{StaticResource Label}" Margin="0,0,0,2"/>
+                <TextBlock x:Name="SentText" Text="0 MB" FontSize="15" FontWeight="SemiBold"/>
+              </StackPanel>
+            </Grid>
+
+            <TextBlock Text="NOW PLAYING ON THIS LAPTOP" Style="{StaticResource Label}" Margin="0,14,0,4"/>
+            <TextBlock x:Name="LocalTitle" Text="—" FontSize="13" TextTrimming="CharacterEllipsis"/>
+          </StackPanel>
+        </Border>
+
+        <!-- options -->
+        <Border Margin="0,14,0,0" CornerRadius="20" Background="{StaticResource Card}" BorderBrush="{StaticResource CardEdge}" BorderThickness="1" Padding="16,14">
+          <StackPanel>
+            <CheckBox x:Name="AutoStartBox" Content="Start streaming when the app opens" Click="Option_Click"/>
+            <CheckBox x:Name="TitlesBox" Content="Show song titles on the radio" Margin="0,10,0,0" Click="Option_Click"/>
+          </StackPanel>
+        </Border>
+
+        <TextBlock x:Name="LogText" Margin="4,14,4,0" FontSize="11.5" Foreground="{StaticResource Faint}"
+                   TextWrapping="Wrap" Text="When Windows asks, allow Night Owl Link on private networks so the radio can reach it."/>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</Window>
